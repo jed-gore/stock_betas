@@ -29,5 +29,5 @@ Or a better view is in a bar plot:<br>
 
 <br>
 You can see how the R2 with GPN has been increasing over the past three windows 252, 90, and 60 day rolling.
-<>br
+<br>
 To me, this suggests SQ is starting to trade more like a processor and less like a bitcoin stock, as you might imagine it would post the crypto selloff of 2022.
