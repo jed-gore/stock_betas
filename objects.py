@@ -51,9 +51,9 @@ class StockData:
         df.sort_values("R2_60")
         self.r2_data = df
 
-    def plot_r2_data(self):
+    def plot_r2_data(self, ticker):
         self.r2_data.set_index("TICKER")[["R2_60", "R2_90", "R2_252"]].plot(
-            title="Relative R2", kind="bar"
+            title=f"{ticker} Relative R2", kind="bar"
         )
 
     def get_beta_data(self, stock_list):
@@ -103,7 +103,7 @@ class StockData:
         self.df_plot = pd.concat([self.portfolio_return, self.spy_return], axis=1)
         self.df_plot.set_index("index")[
             ["portfolio_return", "SPY_return", "SQ_cmltv_ret"]
-        ].plot(title="252 day cumulative return")
+        ].plot(title="Cumulative Return")
 
     def get_price_data(self, ticker):
         price_data = si.get_data(ticker, start_date="01/01/2009")
