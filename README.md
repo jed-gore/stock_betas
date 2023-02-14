@@ -22,9 +22,6 @@ I then used a list of ETF and single stocks as "factors" in a way to see if SQ s
 
 ![image](https://user-images.githubusercontent.com/39496491/218769865-f1fab971-5584-4c0f-b2b0-6a2b8be29a1c.png)
 
-You can see the output here:<>br
-
-![image](https://user-images.githubusercontent.com/39496491/218770178-03a5ba41-29d0-4e7d-8aab-464dde14e6fa.png)
 
 Or a better view is in a bar plot:<br>
 
