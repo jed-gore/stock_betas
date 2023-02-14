@@ -15,17 +15,22 @@ First I set up a list of peers:<br>
 
 And then plot the relative return:<>br
 As you can see, SQ had a nice bounce back in the heady bitcoin days but has underperformed its peers since.
+<br>
 ![image](https://user-images.githubusercontent.com/39496491/218769536-f38db679-fc72-4b0c-ae8e-ead236fa9a1f.png)
 
 I then used a list of ETF and single stocks as "factors" in a way to see if SQ still correlated with Bitcoin (using MSTR as a proxy) or if it traded with Oil (USO) or retail (AMZN) etc.<br>
+
 ![image](https://user-images.githubusercontent.com/39496491/218769865-f1fab971-5584-4c0f-b2b0-6a2b8be29a1c.png)
 
 You can see the output here:<>br
+
 ![image](https://user-images.githubusercontent.com/39496491/218770178-03a5ba41-29d0-4e7d-8aab-464dde14e6fa.png)
 
-Or a better view is in a bar plot:<>br
+Or a better view is in a bar plot:<br>
+
 ![image](https://user-images.githubusercontent.com/39496491/218770338-d8a6d730-b037-4f6c-93e7-9b029bad19cc.png)
-<>br
+
+<br>
 You can see how the R2 with GPN has been increasing over the past three windows 252, 90, and 60 day rolling.
 <>br
 To me, this suggests SQ is starting to trade more like a processor and less like a bitcoin stock, as you might imagine it would post the crypto selloff of 2022.
