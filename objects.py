@@ -6,6 +6,68 @@ import statsmodels.api as sm
 
 
 class StockData:
+    def get_cross_correlations(
+        self,
+        stock_list=[],
+        rolling_window=60,
+    ):
+        i = []
+        j = []
+        run_list = []
+        df_output = pd.DataFrame()
+        df_output["index"] = self.dataset["index"]
+        df = self.dataset
+        for ticker_i in stock_list:
+            for ticker_j in stock_list:
+                if (
+                    ticker_j != ticker_i
+                    and ticker_j + ticker_i not in run_list
+                    and ticker_i + ticker_j not in run_list
+                ):
+                    df_output[ticker_j + "_" + ticker_i] = (
+                        df[ticker_j].rolling(rolling_window).corr(df[ticker_i])
+                    )
+                    run_list.append(ticker_j + ticker_i)
+                    run_list.append(ticker_i + ticker_j)
+        df_output[f"{rolling_window}_corr"] = df_output.drop("index", axis=1).mean(
+            axis=1
+        )
+        self.rolling_window = rolling_window
+        self.correlations = df_output
+        return df_output
+
+    def plot_cross_correlations(self):
+        self.correlations["std"] = self.correlations[
+            f"{self.rolling_window}_corr"
+        ].std()
+        self.correlations["mean"] = self.correlations[
+            f"{self.rolling_window}_corr"
+        ].mean()
+        self.correlations["std_1"] = (
+            self.correlations["mean"] + self.correlations["std"]
+        )
+        self.correlations["std_2"] = (
+            self.correlations["mean"] + 2 * self.correlations["std"]
+        )
+        self.correlations["std_minus_1"] = (
+            self.correlations["mean"] - self.correlations["std"]
+        )
+        self.correlations["std_minus_2"] = (
+            self.correlations["mean"] - 2 * self.correlations["std"]
+        )
+        self.correlations.plot(
+            title=f"Cross Correlations for {self.stock_list}",
+            x="index",
+            y=[
+                f"{self.rolling_window}_corr",
+                "std_1",
+                "std_2",
+                "std_minus_1",
+                "std_minus_2",
+                "mean",
+            ],
+        )
+
     def get_r2_data(self, betas_list, ticker):
         list_df = []
         for item in betas_list:
