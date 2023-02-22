@@ -3,6 +3,96 @@ import numpy as np
 import yahoo_fin.stock_info as si
 import statsmodels.tsa.stattools as ts
 import statsmodels.api as sm
+import itertools
+from statsmodels.tsa.stattools import coint
+
+
+class Portfolio:
+    def __init__(self, stock_list, log=False):
+        self.stock_list = stock_list
+        self.get_prices(log)
+        self.get_pairs()
+
+    def get_pairs(self):
+        self.all_pairs = list(itertools.combinations(self.stock_list, 2))
+        self.cointegrating_pairs = []
+        self.pairs = []
+
+        for item in self.all_pairs:
+            pair = self.Pair(
+                self.dataset[item[0]],
+                self.dataset[item[1]],
+                item[0],
+                item[1],
+                self.dataset["price_date"],
+            )
+            self.pairs.append(pair)
+
+    class Pair:
+        def __init__(self, x, y, x_name, y_name, price_date):
+            self.x_name = x_name
+            self.y_name = y_name
+            self.price_date = price_date
+            self.x = x
+            self.y = y
+            self.cointegrates = False
+            self.beta = sm.OLS(x, y).fit().params[0]
+            self.spread = y - self.beta * x
+            self.normalized_spread_trading = (
+                self.spread - self.spread.mean()
+            ) / self.spread.std()
+            self.coint_t, self.pvalue, self.crit_value = coint(x, y)
+            if self.pvalue < 0.05:
+                self.cointegrates = True
+            return
+
+        def plot_spread(self):
+            df = pd.DataFrame()
+            df["price_date"] = self.price_date
+            df["normalized_spread"] = self.normalized_spread_trading
+            df.plot(
+                x="price_date",
+                y="normalized_spread",
+                title=f"{self.x_name} vs {self.y_name}",
+            )
+
+    def get_prices(self, log=False):
+        list_df = []
+        for item in self.stock_list:
+            df = self.get_price_data(item)
+            list_df.append(df)
+        self.df_long = pd.concat(list_df, axis=0).reset_index()
+        self.df_wide = self.df_long.pivot_table(
+            index=["index"], columns="ticker", values="adjclose"
+        ).reset_index()
+
+        self.spy = self.get_price_data("SPY")
+
+        self.spy = (
+            self.spy.reset_index()
+            .pivot_table(index="index", columns="ticker", values="adjclose")
+            .reset_index()
+        )
+
+        self.dataset = pd.merge(
+            self.spy, self.df_wide, how="inner", left_on="index", right_on="index"
+        )
+        self.dataset = self.dataset.dropna()
+        self.dataset["price_date"] = self.dataset["index"]
+        self.dataset.drop(columns="index", inplace=True)
+        if log == True:
+            for item in self.stock_list:
+                self.dataset[item] = np.log(self.dataset[item])
+            self.dataset["SPY"] = np.log(self.dataset["SPY"])
+
+    def get_price_data(self, ticker):
+        price_data = si.get_data(ticker, start_date="01/01/2012")
+        df = pd.DataFrame(price_data)
+        df = df[["adjclose"]]
+        df["pct_change"] = df.adjclose.pct_change()
+        df["log_return"] = np.log(1 + df["pct_change"].astype(float))
+        df["ticker"] = ticker
+        return df
 
 
 class StockData:
