@@ -37,3 +37,4 @@ You can see how the R2 with GPN has been increasing over the past three windows 
 To me, this suggests SQ is starting to trade more like a processor and less like a bitcoin stock, as you might imagine it would post the crypto selloff of 2022.
 >>>>>>> cef3c2701d95b72a3bcca3df810b5baf05ff5e9e
 # bank_assets_chart
+# bank_assets_chart
